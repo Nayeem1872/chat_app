@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "SampleAppExpo",
-    "slug": "SampleAppExpo",
+    "name": "Message Mate",
+    "slug": "MessageMate",
     "version": "5.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/p2.png",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/p2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.cometchat.internal.reactnative.ios",
+      "bundleIdentifier": "com.cometchat.messageMate.reactnative.ios",
       "userInterfaceStyle": "automatic",
       "infoPlist": {
         "NSCameraUsageDescription": "This is for Camera permission",
@@ -23,11 +23,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/p2.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.cometchat.sampleapp.reactnative.android",
+      "package": "com.cometchat.messageMate.reactnative.android",
       "userInterfaceStyle": "automatic",
       "permissions": [
         "android.permission.INTERNET",
@@ -38,7 +38,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/p2.png"
     }
   }
 }
