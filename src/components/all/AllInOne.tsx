@@ -10,7 +10,18 @@ import {
   TextInput,
   SectionList,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import {
+  ArrowLeft,
+  Send,
+  Smile,
+  Paperclip,
+  Phone,
+  Video,
+  MoreVertical,
+} from "lucide-react-native";
 
 // Simple color theme
 const colors = {
@@ -110,18 +121,43 @@ const allData = {
 const AllInOne: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [chatMessage, setChatMessage] = useState("");
+  const [messages, setMessages] = useState<any[]>([
+    {
+      id: 1,
+      text: "Hey! How are you doing today?",
+      sender: "other",
+      timestamp: "10:30 AM",
+      avatar: "A",
+    },
+    {
+      id: 2,
+      text: "I'm doing great! Just working on some new projects. How about you?",
+      sender: "me",
+      timestamp: "10:32 AM",
+    },
+    {
+      id: 3,
+      text: "That sounds awesome! I'd love to hear more about your projects sometime.",
+      sender: "other",
+      timestamp: "10:35 AM",
+      avatar: "A",
+    },
+    {
+      id: 4,
+      text: "Absolutely! Let's catch up soon 😊",
+      sender: "me",
+      timestamp: "10:37 AM",
+    },
+  ]);
 
   const handleItemPress = (item: any) => {
     if (item.type === "user") {
-      Alert.alert("User Selected", `Start chat with ${item.name}?`, [
-        {
-          text: "Start Chat",
-          onPress: () =>
-            Alert.alert("Feature Coming Soon", "Chat will be available soon!"),
-        },
-        { text: "Cancel", style: "cancel" },
-      ]);
+      setSelectedUser(item);
+      // You can load specific chat history for this user here
     } else if (item.type === "conversation") {
+      // Handle conversation tap - could also open chat
       Alert.alert("Open Chat", `Open conversation with ${item.name}?`, [
         {
           text: "Open",
@@ -142,6 +178,37 @@ const AllInOne: React.FC = () => {
         },
         { text: "Cancel", style: "cancel" },
       ]);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (chatMessage.trim()) {
+      const newMessage = {
+        id: messages.length + 1,
+        text: chatMessage,
+        sender: "me",
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setMessages([...messages, newMessage]);
+      setChatMessage("");
+
+      // Simulate a response after 2 seconds
+      setTimeout(() => {
+        const responseMessage = {
+          id: messages.length + 2,
+          text: "Thanks for your message! 😊",
+          sender: "other",
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          avatar: selectedUser?.name?.charAt(0).toUpperCase() || "U",
+        };
+        setMessages((prev) => [...prev, responseMessage]);
+      }, 2000);
     }
   };
 
@@ -383,46 +450,188 @@ const AllInOne: React.FC = () => {
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Search Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>All Communications</Text>
-
-        {/* Search Box */}
-        <View style={styles.searchContainer}>
-          <Text style={styles.searchIcon}>🔍</Text>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search users, chats, or calls..."
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+  const renderChatMessage = ({ item }: { item: any }) => {
+    const isMe = item.sender === "me";
+    return (
+      <View
+        style={[
+          styles.messageContainer,
+          isMe ? styles.myMessage : styles.otherMessage,
+        ]}
+      >
+        {!isMe && (
+          <View style={styles.messageAvatar}>
+            <Text style={styles.messageAvatarText}>
+              {item.avatar || selectedUser?.name?.charAt(0).toUpperCase()}
+            </Text>
+          </View>
+        )}
+        <View
+          style={[
+            styles.messageBubble,
+            isMe ? styles.myMessageBubble : styles.otherMessageBubble,
+          ]}
+        >
+          <Text
+            style={[
+              styles.messageText,
+              isMe ? styles.myMessageText : styles.otherMessageText,
+            ]}
+          >
+            {item.text}
+          </Text>
+          <Text
+            style={[
+              styles.messageTime,
+              isMe ? styles.myMessageTime : styles.otherMessageTime,
+            ]}
+          >
+            {item.timestamp}
+          </Text>
         </View>
+      </View>
+    );
+  };
 
-        {/* Filter Buttons */}
-        <View style={styles.filterContainer}>
-          <FilterButton filter="all" title="All" />
-          <FilterButton filter="users" title="Users" />
-          <FilterButton filter="conversations" title="Chats" />
-          <FilterButton filter="calls" title="Calls" />
+  const renderChatHeader = () => (
+    <View style={styles.chatHeader}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => setSelectedUser(null)}
+      >
+        <ArrowLeft size={24} color={colors.white} />
+      </TouchableOpacity>
+
+      <View style={styles.chatHeaderInfo}>
+        <View style={styles.chatHeaderAvatar}>
+          <Text style={styles.chatHeaderAvatarText}>
+            {selectedUser?.name?.charAt(0).toUpperCase()}
+          </Text>
+        </View>
+        <View style={styles.chatHeaderText}>
+          <Text style={styles.chatHeaderName}>{selectedUser?.name}</Text>
+          <Text style={styles.chatHeaderStatus}>
+            {selectedUser?.status === "online" ? "🟢 Online" : "⚫ Offline"}
+          </Text>
         </View>
       </View>
 
-      {/* Content */}
-      {getSectionData().length === 0 ? (
-        renderEmptyState()
-      ) : (
-        <SectionList
-          sections={getSectionData()}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          renderSectionHeader={renderSectionHeader}
-          style={styles.list}
-          showsVerticalScrollIndicator={false}
-          stickySectionHeadersEnabled={false}
+      <View style={styles.chatHeaderActions}>
+        <TouchableOpacity style={styles.chatHeaderAction}>
+          <Phone size={22} color={colors.white} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatHeaderAction}>
+          <Video size={22} color={colors.white} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatHeaderAction}>
+          <MoreVertical size={22} color={colors.white} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const renderChatInput = () => (
+    <View style={styles.chatInputContainer}>
+      <TouchableOpacity style={styles.attachButton}>
+        <Paperclip size={22} color={colors.textSecondary} />
+      </TouchableOpacity>
+
+      <View style={styles.messageInputWrapper}>
+        <TextInput
+          style={styles.messageInput}
+          placeholder="Type a message..."
+          placeholderTextColor={colors.textSecondary}
+          value={chatMessage}
+          onChangeText={setChatMessage}
+          multiline
+          maxLength={500}
         />
+        <TouchableOpacity style={styles.emojiButton}>
+          <Smile size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity
+        style={[
+          styles.sendButton,
+          chatMessage.trim() ? styles.sendButtonActive : {},
+        ]}
+        onPress={handleSendMessage}
+        disabled={!chatMessage.trim()}
+      >
+        <Send
+          size={20}
+          color={chatMessage.trim() ? colors.white : colors.textSecondary}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {selectedUser ? (
+        // Chat Interface
+        <KeyboardAvoidingView
+          style={styles.chatContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          {renderChatHeader()}
+
+          <FlatList
+            data={messages}
+            renderItem={renderChatMessage}
+            keyExtractor={(item) => item.id.toString()}
+            style={styles.messagesList}
+            contentContainerStyle={styles.messagesContent}
+            showsVerticalScrollIndicator={false}
+            inverted={false}
+          />
+
+          {renderChatInput()}
+        </KeyboardAvoidingView>
+      ) : (
+        // Main List Interface
+        <>
+          {/* Search Header */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>All Communications</Text>
+
+            {/* Search Box */}
+            <View style={styles.searchContainer}>
+              <Text style={styles.searchIcon}>🔍</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search users, chats, or calls..."
+                placeholderTextColor={colors.textSecondary}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+            </View>
+
+            {/* Filter Buttons */}
+            <View style={styles.filterContainer}>
+              <FilterButton filter="all" title="All" />
+              <FilterButton filter="users" title="Users" />
+              <FilterButton filter="conversations" title="Chats" />
+              <FilterButton filter="calls" title="Calls" />
+            </View>
+          </View>
+
+          {/* Content */}
+          {getSectionData().length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <SectionList
+              sections={getSectionData()}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
+              style={styles.list}
+              showsVerticalScrollIndicator={false}
+              stickySectionHeadersEnabled={false}
+            />
+          )}
+        </>
       )}
     </SafeAreaView>
   );
@@ -637,6 +846,194 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "600",
+  },
+
+  // Chat Interface Styles
+  chatContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  chatHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 12,
+  },
+  chatHeaderInfo: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  chatHeaderAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  chatHeaderAvatarText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  chatHeaderText: {
+    flex: 1,
+  },
+  chatHeaderName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  chatHeaderStatus: {
+    fontSize: 12,
+    color: "rgba(255, 255, 255, 0.8)",
+    marginTop: 2,
+  },
+  chatHeaderActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  chatHeaderAction: {
+    padding: 8,
+    marginLeft: 8,
+  },
+
+  // Messages Styles
+  messagesList: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  messagesContent: {
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+  },
+  messageContainer: {
+    flexDirection: "row",
+    marginVertical: 4,
+    maxWidth: "80%",
+  },
+  myMessage: {
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+  },
+  otherMessage: {
+    alignSelf: "flex-start",
+    justifyContent: "flex-start",
+  },
+  messageAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
+    marginTop: 4,
+  },
+  messageAvatarText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  messageBubble: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 20,
+    maxWidth: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  myMessageBubble: {
+    backgroundColor: colors.primary,
+    borderBottomRightRadius: 4,
+  },
+  otherMessageBubble: {
+    backgroundColor: colors.white,
+    borderBottomLeftRadius: 4,
+  },
+  messageText: {
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  myMessageText: {
+    color: colors.white,
+  },
+  otherMessageText: {
+    color: colors.textPrimary,
+  },
+  messageTime: {
+    fontSize: 11,
+    marginTop: 4,
+  },
+  myMessageTime: {
+    color: "rgba(255, 255, 255, 0.7)",
+    textAlign: "right",
+  },
+  otherMessageTime: {
+    color: colors.textSecondary,
+  },
+
+  // Chat Input Styles
+  chatInputContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    backgroundColor: colors.white,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  attachButton: {
+    padding: 12,
+    marginRight: 8,
+  },
+  messageInputWrapper: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    backgroundColor: colors.searchBackground,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    maxHeight: 100,
+  },
+  messageInput: {
+    flex: 1,
+    fontSize: 16,
+    color: colors.textPrimary,
+    maxHeight: 80,
+    textAlignVertical: "center",
+  },
+  emojiButton: {
+    padding: 4,
+    marginLeft: 8,
+  },
+  sendButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.border,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  sendButtonActive: {
+    backgroundColor: colors.primary,
   },
 });
 

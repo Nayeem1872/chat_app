@@ -6,6 +6,7 @@ import {
   Text,
   BackHandler,
   Platform,
+  StatusBar,
 } from "react-native";
 import {
   CometChatUIKit,
@@ -24,6 +25,18 @@ import InfoIcon from "../../../assets/icons/InfoIcon";
 import { CommonUtils } from "../../../utils/CommonUtils";
 import Info from "../../../assets/icons/Info";
 import { ChatStackParamList } from "../../../navigation/paramLists";
+
+// Enhanced color theme with primary color #667eea
+const customColors = {
+  primary: "#667eea",
+  primaryLight: "rgba(102, 126, 234, 0.1)",
+  background: "#f8f9fc",
+  white: "#ffffff",
+  textPrimary: "#2d3748",
+  textSecondary: "#718096",
+  border: "#e2e8f0",
+  shadow: "rgba(102, 126, 234, 0.15)",
+};
 
 type Props = StackScreenProps<ChatStackParamList, "Messages">;
 
@@ -162,7 +175,15 @@ const Messages: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.flexOne}>
+    <View
+      style={[styles.flexOne, { backgroundColor: customColors.background }]}
+    >
+      <StatusBar
+        backgroundColor={customColors.primary}
+        barStyle="light-content"
+        translucent={false}
+      />
+
       <CometChatMessageHeader
         user={localUser}
         group={group}
@@ -172,7 +193,10 @@ const Messages: React.FC<Props> = ({ route, navigation }) => {
         TrailingView={getTrailingView}
         showBackButton={true}
       />
-      <View style={styles.flexOne}>
+
+      <View
+        style={[styles.flexOne, { backgroundColor: customColors.background }]}
+      >
         <CometChatMessageList
           user={user}
           group={group}
@@ -185,20 +209,26 @@ const Messages: React.FC<Props> = ({ route, navigation }) => {
           }}
         />
       </View>
+
       {localUser?.getBlockedByMe() ? (
         <View
           style={[
             styles.blockedContainer,
-            { backgroundColor: theme.color.background3 },
+            {
+              backgroundColor: customColors.white,
+              borderTopWidth: 1,
+              borderTopColor: customColors.border,
+            },
           ]}
         >
           <Text
             style={[
               theme.typography.button.regular,
               {
-                color: theme.color.textSecondary,
+                color: customColors.textSecondary,
                 textAlign: "center",
                 paddingBottom: 10,
+                fontSize: 14,
               },
             ]}
           >
@@ -206,14 +236,21 @@ const Messages: React.FC<Props> = ({ route, navigation }) => {
           </Text>
           <TouchableOpacity
             onPress={() => unblock(localUser)}
-            style={[styles.button, { borderColor: theme.color.borderDefault }]}
+            style={[
+              styles.button,
+              {
+                borderColor: customColors.primary,
+                backgroundColor: customColors.primaryLight,
+              },
+            ]}
           >
             <Text
               style={[
                 theme.typography.button.medium,
                 styles.buttontext,
                 {
-                  color: theme.color.textPrimary,
+                  color: customColors.primary,
+                  fontWeight: "600",
                 },
               ]}
             >
@@ -222,17 +259,26 @@ const Messages: React.FC<Props> = ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       ) : (
-        <CometChatMessageComposer
-          user={localUser}
-          group={group}
-          keyboardAvoidingViewProps={{
-            ...(Platform.OS === "android"
-              ? {}
-              : {
-                  behavior: "padding",
-                }),
+        <View
+          style={{
+            backgroundColor: customColors.white,
+            borderTopWidth: 1,
+            borderTopColor: customColors.border,
+            paddingBottom: Platform.OS === "ios" ? 20 : 0,
           }}
-        />
+        >
+          <CometChatMessageComposer
+            user={localUser}
+            group={group}
+            keyboardAvoidingViewProps={{
+              ...(Platform.OS === "android"
+                ? {}
+                : {
+                    behavior: "padding",
+                  }),
+            }}
+          />
+        </View>
       )}
     </View>
   );
@@ -244,20 +290,31 @@ const styles = StyleSheet.create({
   },
   blockedContainer: {
     alignItems: "center",
-    height: 90,
-    paddingVertical: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    shadowColor: customColors.shadow,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   button: {
-    flex: 1,
     justifyContent: "center",
     borderWidth: 2,
     width: "90%",
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 12,
+    shadowColor: customColors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   buttontext: {
     paddingVertical: 5,
     textAlign: "center",
     alignContent: "center",
+    fontSize: 16,
   },
   appBarContainer: {
     flexDirection: "row",
