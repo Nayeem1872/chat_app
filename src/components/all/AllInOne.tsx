@@ -9,6 +9,7 @@ import {
   Alert,
   TextInput,
   SectionList,
+  Image,
 } from "react-native";
 
 // Simple color theme
@@ -328,6 +329,60 @@ const AllInOne: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const renderEmptyState = () => (
+    <View style={styles.emptyStateContainer}>
+      <Image
+        source={require("../../assets/icons/bug.png")}
+        style={styles.emptyStateRobot}
+        resizeMode="contain"
+      />
+      <Text style={styles.emptyStateTitle}>
+        {searchQuery ? "No Results Found" : getEmptyStateTitle()}
+      </Text>
+      <Text style={styles.emptyStateSubtitle}>
+        {searchQuery
+          ? `No matches for "${searchQuery}". Try a different search.`
+          : getEmptyStateMessage()}
+      </Text>
+      {!searchQuery && (
+        <TouchableOpacity
+          style={styles.emptyStateButton}
+          onPress={() =>
+            Alert.alert("Coming Soon", "This feature will be available soon!")
+          }
+        >
+          <Text style={styles.emptyStateButtonText}>Start Exploring</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
+  const getEmptyStateTitle = () => {
+    switch (activeFilter) {
+      case "users":
+        return "No Users Found";
+      case "conversations":
+        return "No Conversations Yet";
+      case "calls":
+        return "No Call History";
+      default:
+        return "Ready to Connect!";
+    }
+  };
+
+  const getEmptyStateMessage = () => {
+    switch (activeFilter) {
+      case "users":
+        return "Add some friends to start chatting and calling.";
+      case "conversations":
+        return "Start a conversation to see your chats here.";
+      case "calls":
+        return "Make your first call to see call history.";
+      default:
+        return "Your AI-powered messaging assistant is ready to help you connect with friends!";
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Search Header */}
@@ -356,15 +411,19 @@ const AllInOne: React.FC = () => {
       </View>
 
       {/* Content */}
-      <SectionList
-        sections={getSectionData()}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-        stickySectionHeadersEnabled={false}
-      />
+      {getSectionData().length === 0 ? (
+        renderEmptyState()
+      ) : (
+        <SectionList
+          sections={getSectionData()}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+          stickySectionHeadersEnabled={false}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -533,6 +592,51 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     marginLeft: 8,
+  },
+
+  // Empty State Styles
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 32,
+    paddingVertical: 64,
+  },
+  emptyStateRobot: {
+    width: 120,
+    height: 120,
+    marginBottom: 32,
+    opacity: 0.8,
+  },
+  emptyStateTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: colors.textPrimary,
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  emptyStateSubtitle: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    textAlign: "center",
+    lineHeight: 24,
+    marginBottom: 32,
+  },
+  emptyStateButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 24,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  emptyStateButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

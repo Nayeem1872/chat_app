@@ -13,6 +13,7 @@ import {
   Dimensions,
   Animated,
   StatusBar,
+  Image,
 } from "react-native";
 import { SCREEN_CONSTANTS } from "../../utils/AppConstants";
 import { navigationRef } from "../../navigation/NavigationService";
@@ -195,11 +196,15 @@ const LoginScreen: React.FC = () => {
                 {/* Header Section */}
                 <View style={styles.headerContainer}>
                   <View style={styles.logoContainer}>
-                    <Text style={styles.logoEmoji}>🔑</Text>
+                    <Image
+                      source={require("../../../assets/p3.png")}
+                      style={styles.robotLoginImage}
+                      resizeMode="contain"
+                    />
                   </View>
                   <Text style={styles.logInTitle}>Sign In</Text>
                   <Text style={styles.subtitle}>
-                    Welcome back! Please sign in to continue
+                    Welcome back! Your AI assistant is ready to help
                   </Text>
                 </View>
 
@@ -351,18 +356,23 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    // shadowColor: colors.primary,
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 8,
+    // elevation: 6,
   },
   logoEmoji: {
     fontSize: 36,
+  },
+  robotLoginImage: {
+    width: 80,
+    height: 80,
+    // tintColor: colors.primary,
   },
   logInTitle: {
     fontSize: 28,

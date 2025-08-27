@@ -9,7 +9,9 @@ import {
   Easing,
   StatusBar,
   Dimensions,
+  Image,
 } from "react-native";
+import { Brain, Zap, Shield } from "lucide-react-native";
 import { navigate } from "../../navigation/NavigationService";
 import { SCREEN_CONSTANTS } from "../../utils/AppConstants";
 
@@ -103,7 +105,11 @@ const WelcomeScreen: React.FC = () => {
             style={[styles.logoSection, { transform: [{ scale: logoScale }] }]}
           >
             <View style={styles.logoContainer}>
-              <Text style={styles.logoEmoji}>💬</Text>
+              <Image
+                source={require("../../../assets/p1.png")}
+                style={styles.robotImage}
+                resizeMode="contain"
+              />
             </View>
           </Animated.View>
 
@@ -117,16 +123,34 @@ const WelcomeScreen: React.FC = () => {
 
             <View style={styles.features}>
               <View style={styles.feature}>
-                <Text style={styles.featureEmoji}>🚀</Text>
-                <Text style={styles.featureText}>Fast & Secure</Text>
+                <View style={styles.iconContainer}>
+                  <Brain
+                    size={28}
+                    color="rgba(255, 255, 255, 0.95)"
+                    strokeWidth={2.5}
+                  />
+                </View>
+                <Text style={styles.featureText}>AI Powered</Text>
               </View>
               <View style={styles.feature}>
-                <Text style={styles.featureEmoji}>💫</Text>
-                <Text style={styles.featureText}>Beautiful UI</Text>
+                <View style={styles.iconContainer}>
+                  <Zap
+                    size={28}
+                    color="rgba(255, 255, 255, 0.95)"
+                    strokeWidth={2.5}
+                  />
+                </View>
+                <Text style={styles.featureText}>Super Fast</Text>
               </View>
               <View style={styles.feature}>
-                <Text style={styles.featureEmoji}>🌍</Text>
-                <Text style={styles.featureText}>Global Connect</Text>
+                <View style={styles.iconContainer}>
+                  <Shield
+                    size={28}
+                    color="rgba(255, 255, 255, 0.95)"
+                    strokeWidth={2.5}
+                  />
+                </View>
+                <Text style={styles.featureText}>Secure Chat</Text>
               </View>
             </View>
           </View>
@@ -195,17 +219,22 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    // backgroundColor: "rgba(255, 255, 255, 0.2)",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "rgba(0, 0, 0, 0.3)",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    // shadowColor: "rgba(0, 0, 0, 0.3)",
+    // shadowOffset: { width: 0, height: 8 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 16,
+    // elevation: 8,
   },
   logoEmoji: {
     fontSize: 56,
+  },
+  robotImage: {
+    width: 170,
+    height: 170,
+    // tintColor: 'rgba(255, 255, 255, 0.9)',
   },
 
   // Welcome Content
@@ -250,16 +279,37 @@ const styles = StyleSheet.create({
   feature: {
     alignItems: "center",
     flex: 1,
+    paddingVertical: 8,
   },
   featureEmoji: {
     fontSize: 32,
     marginBottom: 8,
+  },
+  featureIcon: {
+    width: 32,
+    height: 32,
+    marginBottom: 12,
+    tintColor: "rgba(255, 255, 255, 0.9)",
   },
   featureText: {
     fontSize: 14,
     color: "rgba(255, 255, 255, 0.8)",
     fontWeight: "500",
     textAlign: "center",
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
+    shadowColor: "rgba(0, 0, 0, 0.2)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   // Bottom Section

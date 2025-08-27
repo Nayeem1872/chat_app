@@ -213,7 +213,11 @@ const Profile: React.FC = () => {
         {/* Avatar */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{profileData.name.charAt(0)}</Text>
+            <Image
+              source={require("../../assets/icons/dark.png")}
+              style={styles.robotProfileAvatar}
+              resizeMode="contain"
+            />
           </View>
           <TouchableOpacity
             style={styles.editAvatarButton}
@@ -342,9 +346,9 @@ const Profile: React.FC = () => {
 
         {/* App Version */}
         <View style={styles.versionSection}>
-          <Text style={styles.versionText}>ChatApp v2.1.0</Text>
+          <Text style={styles.versionText}>MessageMate v2.1.0 🤖</Text>
           <Text style={styles.versionSubtext}>
-            Made with ❤️ for amazing conversations
+            Powered by AI • Made with ❤️ for amazing conversations
           </Text>
         </View>
       </ScrollView>
@@ -422,6 +426,11 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold",
     color: colors.white,
+  },
+  robotProfileAvatar: {
+    width: 80,
+    height: 80,
+    tintColor: colors.white,
   },
   editAvatarButton: {
     position: "absolute",
