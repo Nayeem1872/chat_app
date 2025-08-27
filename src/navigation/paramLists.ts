@@ -9,10 +9,9 @@ import { CometChat } from "@cometchat/chat-sdk-react-native";
  * Bottom-tab navigator (the main app shell)
  * -------------------------------------------------------------------------- */
 export type BottomTabParamList = {
-  Chats: NavigatorScreenParams<ChatStackParamList>;
-  Calls: NavigatorScreenParams<CallStackParamList>;
-  Users: NavigatorScreenParams<UserStackParamList>;
+  All: undefined;
   Groups: NavigatorScreenParams<GroupStackParamList>;
+  Profile: undefined;
 };
 
 /* --------------------------------------------------------------------------
