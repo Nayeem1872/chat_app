@@ -54,7 +54,7 @@ const WelcomeScreen: React.FC = () => {
           useNativeDriver: true,
         }),
       ]).start();
-      
+
       // Start swipe indicator animation
       startSwipeAnimation();
       setIsInitialized(true);
@@ -99,11 +99,8 @@ const WelcomeScreen: React.FC = () => {
           ]}
         >
           {/* Logo Section */}
-          <Animated.View 
-            style={[
-              styles.logoSection,
-              { transform: [{ scale: logoScale }] }
-            ]}
+          <Animated.View
+            style={[styles.logoSection, { transform: [{ scale: logoScale }] }]}
           >
             <View style={styles.logoContainer}>
               <Text style={styles.logoEmoji}>💬</Text>
@@ -117,7 +114,7 @@ const WelcomeScreen: React.FC = () => {
             <Text style={styles.description}>
               Connect with friends instantly and share memorable moments
             </Text>
-            
+
             <View style={styles.features}>
               <View style={styles.feature}>
                 <Text style={styles.featureEmoji}>🚀</Text>
@@ -144,9 +141,9 @@ const WelcomeScreen: React.FC = () => {
               <Text style={styles.continueButtonText}>Get Started</Text>
               <Text style={styles.continueButtonIcon}>✨</Text>
             </TouchableOpacity>
-            
+
             {/* Swipe Indicator */}
-            <Animated.View 
+            <Animated.View
               style={[
                 styles.swipeIndicator,
                 {
@@ -188,7 +185,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 40,
   },
-  
+
   // Logo Section
   logoSection: {
     alignItems: "center",
@@ -210,7 +207,7 @@ const styles = StyleSheet.create({
   logoEmoji: {
     fontSize: 56,
   },
-  
+
   // Welcome Content
   welcomeContent: {
     alignItems: "center",
@@ -242,7 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontWeight: "400",
   },
-  
+
   // Features
   features: {
     flexDirection: "row",
@@ -264,7 +261,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
   },
-  
+
   // Bottom Section
   bottomSection: {
     alignItems: "center",
@@ -294,7 +291,7 @@ const styles = StyleSheet.create({
   continueButtonIcon: {
     fontSize: 18,
   },
-  
+
   // Swipe Indicator
   swipeIndicator: {
     alignItems: "center",

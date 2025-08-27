@@ -78,15 +78,18 @@ const LoginScreen: React.FC = () => {
   }, []);
 
   // Handle email input with validation
-  const handleEmailChange = useCallback((text: string) => {
-    setEmail(text);
-    // Only validate if user has typed something
-    if (text.trim().length > 0) {
-      setIsValidEmail(validateEmail(text));
-    } else {
-      setIsValidEmail(true); // Don't show error on empty field
-    }
-  }, [validateEmail]);
+  const handleEmailChange = useCallback(
+    (text: string) => {
+      setEmail(text);
+      // Only validate if user has typed something
+      if (text.trim().length > 0) {
+        setIsValidEmail(validateEmail(text));
+      } else {
+        setIsValidEmail(true); // Don't show error on empty field
+      }
+    },
+    [validateEmail]
+  );
 
   // Handle password input
   const handlePasswordChange = useCallback((text: string) => {
@@ -113,8 +116,6 @@ const LoginScreen: React.FC = () => {
   const handlePasswordBlur = useCallback(() => {
     setPasswordFocused(false);
   }, []);
-
-
 
   const handleLogin = useCallback(() => {
     const trimmedEmail = email.trim();
@@ -210,7 +211,9 @@ const LoginScreen: React.FC = () => {
                       style={[
                         styles.inputWrapper,
                         emailFocused && styles.inputWrapperFocused,
-                        !isValidEmail && email.trim().length > 0 && styles.inputWrapperError,
+                        !isValidEmail &&
+                          email.trim().length > 0 &&
+                          styles.inputWrapperError,
                       ]}
                     >
                       <Text style={styles.inputIcon}>📧</Text>
@@ -232,7 +235,9 @@ const LoginScreen: React.FC = () => {
                       />
                     </View>
                     {!isValidEmail && email.trim().length > 0 && (
-                      <Text style={styles.errorText}>Please enter a valid email address</Text>
+                      <Text style={styles.errorText}>
+                        Please enter a valid email address
+                      </Text>
                     )}
                   </View>
 
@@ -270,8 +275,11 @@ const LoginScreen: React.FC = () => {
                 <TouchableOpacity
                   style={[
                     styles.continueButton,
-                    { 
-                      opacity: (!email.trim() || !password.trim() || !isValidEmail) ? 0.6 : 1 
+                    {
+                      opacity:
+                        !email.trim() || !password.trim() || !isValidEmail
+                          ? 0.6
+                          : 1,
                     },
                   ]}
                   onPress={handleLogin}
